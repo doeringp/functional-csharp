@@ -30,15 +30,8 @@ public class Email
     public override string ToString() => Value;
 }
 
-public class EmailTests
+public class EmailTests(ITestOutputHelper output)
 {
-    private readonly ITestOutputHelper _output;
-
-    public EmailTests(ITestOutputHelper output)
-    {
-        _output = output;
-    }
-
     [Fact]
     public void ValidEmailFormat_ShouldBeSome()
     {
@@ -60,5 +53,5 @@ public class EmailTests
     }
 
     private void SendEmail(string emailAddress)
-        => _output.WriteLine($"Sent email to {emailAddress}");
+        => output.WriteLine($"Sent email to {emailAddress}");
 }
