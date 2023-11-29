@@ -6,9 +6,12 @@ namespace Functional;
 public class Val<A>(A value)
 {
     public A Value => value;
-
+    
+    /// <summary>Projection from one value to another (Functor map)</summary>
     public B Select<B>(Func<A, B> f) => f(value);
 
+    /// <summary>Monad bind operation</summary>
+    /// <remarks>The bind function is shape-preserving</remarks>
     public Val<C> SelectMany<B, C>(Func<A, Val<B>> bind, Func<A, B, C> project)
     {
         var b = bind(value);
@@ -17,7 +20,7 @@ public class Val<A>(A value)
     }
 };
 
-public class MonadicBindTests
+public class MonadSampleTests
 {
     [Fact]
     public void FunctorMap_Linq_Select()
