@@ -1,3 +1,9 @@
+// This code sample shows the following design techniques that are common in FP:
+// - Value Objects (Domain-driven Design)
+// - Smart Constructor
+// - Immutability
+// - Implicit Conversion (using the implicit operator from C#)
+
 using Xunit.Abstractions;
 
 namespace Functional;
