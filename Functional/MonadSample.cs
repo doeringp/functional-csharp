@@ -18,7 +18,7 @@ public class Val<A>(A value)
         var c = project(value, b.Value);
         return new Val<C>(c);
     }
-};
+}
 
 public class MonadSampleTests
 {
