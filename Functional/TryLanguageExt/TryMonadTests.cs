@@ -7,7 +7,7 @@ public class TryMonadTests
     private static int Divide(int x, int y) => x / y;
     
     [Fact]
-    public void IfFail_Try_ShouldCaptureException()
+    public void Try_ShouldCaptureException()
     {
         var division = Try(() => Divide(10, 0));
         
@@ -49,5 +49,16 @@ public class TryMonadTests
             select c;
 
         division.Try().IsFaulted.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task TryAsync_ShouldCaptureException()
+    {
+        var readFile = TryAsync(() => File.ReadAllTextAsync("nonexistingpath"));
+        
+        var result = await readFile.Try();
+        
+        result.IsFaulted.Should().BeTrue();
+        result.IfFail(ex => ex.Should().BeOfType<FileNotFoundException>());
     }
 }
