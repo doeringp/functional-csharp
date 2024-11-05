@@ -4,37 +4,50 @@ namespace Functional.TryLanguageExt;
 
 public class TryMonadTests
 {
-    private static Try<int> Divide(int x, int y) => () => x / y;
+    private static int Divide(int x, int y) => x / y;
     
     [Fact]
     public void IfFail_Try_ShouldCaptureException()
     {
-        Try<int> divide = Divide(10, 0);
-        Result<int> result = divide.Try();
+        var division = Try(() => Divide(10, 0));
+        
+        var result = division.Try();
 
-        Assert.True(result.IsFaulted);
-        _ = result.IfFail(ex => Assert.IsType<DivideByZeroException>(ex));
+        result.IsFaulted.Should().BeTrue();
+        result.IfFail(ex => ex.Should().BeOfType<DivideByZeroException>());
     }
     
     [Fact]
     public void MonadicBind_MethodChaining()
     {
-        var result = Divide(10, 2)
-            .Bind(a => Divide(a, 2))
-            .Bind(b => Divide(b, 2));
+        var division = Try(() => Divide(10, 2))
+            .Bind(a => Try(() => Divide(a, 2)))
+            .Bind(b => Try(() => Divide(b, 2)));
 
-        result.Match(i => i, _ => -1).Should().Be(1);
+        division.Try().Match(i => i, _ => -1).Should().Be(1);
     }
     
     [Fact]
     public void MonadicBind_Linq()
     {
-        var result =
-            from a in Divide(10, 2)
-            from b in Divide(a, 2)
-            from c in Divide(b, 2)
+        var division =
+            from a in Try(() => Divide(10, 2))
+            from b in Try(() => Divide(a, 2))
+            from c in Try(() => Divide(b, 2))
             select c;
 
-        result.Match(i => i, _ => -1).Should().Be(1);
+        division.Try().Match(i => i, _ => -1).Should().Be(1);
+    }
+    
+    [Fact]
+    public void MonadicBind_Linq_ShouldFail()
+    {
+        var division =
+            from a in Try(() => Divide(10, 2))
+            from b in Try(() => Divide(a, 2))
+            from c in Try(() => Divide(b, 0))
+            select c;
+
+        division.Try().IsFaulted.Should().BeTrue();
     }
 }
