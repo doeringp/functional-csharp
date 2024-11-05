@@ -35,14 +35,16 @@ public class MonadSampleTests
     [Fact]
     public void MonadicBind_Linq_SelectMany()
     {
-        var value1 = new Val<string>("Hello");
-        var value2 = new Val<string>("World");
-
+        var value1 = new Val<string>("Kamala");
+        var value2 = new Val<string>("Joe");
+        var value3 = new Val<string>("Donald");
+        
         Val<string> output =
             from s1 in value1
             from s2 in value2
-            select s1 + ", " + s2;
+            from s3 in value3
+            select s1 + ", " + s2 + ", " + s3;
 
-        Assert.Equal("Hello, World", output.Value);
+        Assert.Equal("Kamala, Joe, Donald", output.Value);
     }
 }
