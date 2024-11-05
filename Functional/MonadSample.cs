@@ -8,7 +8,7 @@ public class Val<A>(A value)
     public A Value => value;
     
     /// <summary>Projection from one value to another (Functor map)</summary>
-    public B Select<B>(Func<A, B> f) => f(value);
+    public Val<B> Select<B>(Func<A, B> f) => new Val<B>(f(value));
 
     /// <summary>Monad bind operation</summary>
     /// <remarks>The bind function is shape-preserving</remarks>
@@ -27,9 +27,9 @@ public class MonadSampleTests
     {
         var value = new Val<string>("Hello");
 
-        var output = from s in value select s;
+        Val<string> output = from s in value select s;
 
-        Assert.Equal("Hello", output);
+        Assert.Equal("Hello", output.Value);
     }
     
     [Fact]
